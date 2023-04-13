@@ -2,6 +2,7 @@
   "name": "chatgpt",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://YuXiangLin1234.github.io/Whisper-and-ChatGPT",
   "type": "module",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",

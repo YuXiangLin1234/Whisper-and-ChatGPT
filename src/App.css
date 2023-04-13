@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.ask-key-container {
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -205,4 +212,27 @@ audio {
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
+}
+
+.bottom-line {
+  position:fixed;
+  left: 50%;
+  top: 95%;
+  transform: translate(-50%, -50%); 
+  background:#99ccff; 
+  max-width:750px; 
+  width:100%; 
+  height:70px;
+  border-radius:8px;
+  box-shadow:1px 1px;  
+}
+
+.bottom-line-button {
+  position: fixed;
+  left:50%;
+  top:95%;
+  transform: translate(-50%, -50%); 
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
 }

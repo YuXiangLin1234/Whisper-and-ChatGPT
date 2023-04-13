@@ -21,7 +21,7 @@ const AskKeyPage = ({setApiKey}) => {
     }
 
     return (
-        <div className="App" style={{marginTop:"30px"}}>
+        <div className="App ask-key-container" >
             <h2>Whisper + ChatGPT 術前問診系統</h2>
             <span>
                 Api Key : <input type="text" onKeyDown={handleKeyDown} ref={inputRef}/>

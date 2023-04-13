@@ -91,10 +91,8 @@ const MessageRoomPage = ({apiKey}) => {
               ))
               }
             </div>
-            <div style={{position:"fixed",  left: '50%', top: '95%',
-                      transform: 'translate(-50%, -50%)', background:"#99ccff", "maxWidth":"750px", width:"100%", height:"70px", borderRadius:"8px", boxShadow:"1px 1px"}}></div>
-            <div style={{position: 'fixed', left: '50%', top: '95%',
-                      transform: 'translate(-50%, -50%)', display:"flex", justifyContent: "space-between", width: "300px"}}>
+            <div className='bottom-line'></div>
+            <div className='bottom-line-button'>
                 <AudioRecorder onRecordingComplete={addAudioElement}/>
                 <button className='circle-button' disabled={false}  onClick={resetConversation}><ion-icon name="trash" style={{fontSize: "17px"}}></ion-icon></button>
             </div>
