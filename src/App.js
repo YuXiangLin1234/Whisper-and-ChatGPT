@@ -16,10 +16,10 @@ function App() {
 
     return (
         <div className="App" style={{marginTop:"30px"}}>
-            {apiKey.length
-            ? 
-                <MessageRoomPage apiKey = {apiKey}/>
-            :
+            { apiKey.length
+                ?
+                <MessageRoomPage apiKey= {apiKey}/>
+                :
                 <AskKeyPage setApiKey = {setApiKey}/>
             }
         </div>

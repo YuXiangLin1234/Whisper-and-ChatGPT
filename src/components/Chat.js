@@ -5,19 +5,25 @@ import { useEffect, useState } from 'react';
 import formatDate from '../functions/Utils';
 import Loading from './Loading';
 
-const Chat = ({audio, transcription, text}) => {
-	const [sendTime, setSendTime] = useState("");
-	const [respondTime, setRespondTime] = useState("");
+const Chat = ({audio, transcription, translation, chat}) => {
+	const [transcriptionTime, setTranscriptionTime] = useState("");
+	const [translationTime, setTranslationTime] = useState("");
+	const [chatTime, setChatTime] = useState("");
 
 	useEffect(() => {
 		const date = new Date();
-		setSendTime(formatDate(date));
+		setTranscriptionTime(formatDate(date));
 	}, [transcription]);
 	
 	useEffect(() => {
 		const date = new Date();
-		setRespondTime(formatDate(date));
-	}, [text])
+		setTranslationTime(formatDate(date));
+	}, [translation])
+
+	useEffect(() => {
+		const date = new Date();
+		setChatTime(formatDate(date));
+	}, [chat])
 
 	return (
 		<div style={{margin:"20px"}}>
@@ -30,23 +36,23 @@ const Chat = ({audio, transcription, text}) => {
 						// Set this to be null to avoid situation that return is empty
 						audio !== null
 							?
-							<audio controls="True" src={audio}></audio>
+								<audio controls="True" src={audio}></audio>
 							:
-							<Loading/>
+								<Loading/>
 						}
 						{
 						transcription !== null
-						?
-						<>
-						<p>{transcription}</p>
-						<span className="chat-time">{sendTime}</span>
-						</>
-						:
-						audio !== null
 							?
-								<Loading/>
+							<>
+								<p>{transcription}</p>
+								<span className="chat-time">{transcriptionTime}</span>
+							</>
 							:
-								<></>
+							audio !== null
+								?
+									<Loading/>
+								:
+									<></>
 						}
 					</div>
 					<div className='sent-chats-img'>
@@ -55,25 +61,48 @@ const Chat = ({audio, transcription, text}) => {
 				</div>
 				<div className="received-chats">
 					{
-					text !== null
-					?
-					<>
-					<div className='received-chats-img'>
-						<img className='chats-img' src="chatgpt.png"/>
-					</div>
-					<div className='received-msg'>
-						<div className='received-msg-inbox'>
-							<p>{text}</p>
-							<span className="chat-time">{respondTime}</span>
-						</div>
-					</div>
-					</>
-					: 
-					transcription !== null
-					?
-						<Loading/>					
-					:
-						<></>
+					translation !== null
+						?
+							<>
+							<div className='received-chats-img'>
+								<img className='chats-img' src="chatgpt.png"/>
+							</div>
+							<div className='received-msg'>
+								<div className='received-msg-inbox'>
+									<p>{translation}</p>
+									<span className="chat-time">{translationTime}</span>
+								</div>
+							</div>
+							</>
+						: 
+							transcription !== null
+							?
+								<Loading/>					
+							:
+								<></>
+					}
+				</div>
+				<div className="received-chats">
+					{
+					chat !== null
+						?
+						<>
+							<div className='received-chats-img'>
+								<img className='chats-img' src="chatgpt.png"/>
+							</div>
+							<div className='received-msg'>
+								<div className='received-msg-inbox'>
+									<p>{chat}</p>
+									<span className="chat-time">{chatTime}</span>
+								</div>
+							</div>
+						</>
+						: 
+						translation !== null
+							?
+								<Loading/>					
+							:
+								<></>
 					}
 				</div>
 			{/* </div>
