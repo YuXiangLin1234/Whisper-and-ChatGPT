@@ -45,7 +45,16 @@ const Chat = ({audio, transcription, translation, chat}) => {
 							?
 							<>
 								<p>{transcription}</p>
-								<span className="chat-time">{transcriptionTime}</span>
+								{/* <span className="chat-time">{transcriptionTime}</span> */}
+								{translation !== null
+									?
+										<>
+											<p style={{marginTop:"1px"}}>{translation}</p>
+											<span className="chat-time">{translationTime}</span>									
+										</>	
+									:
+										<Loading/>
+								}
 							</>
 							:
 							audio !== null
@@ -59,19 +68,19 @@ const Chat = ({audio, transcription, translation, chat}) => {
 						<img className='chats-img' src="old.png"/>
 					</div>
 				</div>
-				<div className="received-chats">
+				{/* <div className="sent-chats">
 					{
 					translation !== null
 						?
 							<>
-							<div className='received-chats-img'>
-								<img className='chats-img' src="chatgpt.png"/>
-							</div>
-							<div className='received-msg'>
-								<div className='received-msg-inbox'>
+							<div className='sent-chats-msg'>
+								<div className='sent-msg-inbox'>
 									<p>{translation}</p>
 									<span className="chat-time">{translationTime}</span>
 								</div>
+							</div>
+							<div className='sent-chats-img'>
+								<img className='chats-img' src="chatgpt.png"/>
 							</div>
 							</>
 						: 
@@ -81,7 +90,7 @@ const Chat = ({audio, transcription, translation, chat}) => {
 							:
 								<></>
 					}
-				</div>
+				</div> */}
 				<div className="received-chats">
 					{
 					chat !== null
