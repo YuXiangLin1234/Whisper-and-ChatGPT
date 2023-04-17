@@ -2,7 +2,7 @@ import '../App.css';
 import React from "react";
 import { useEffect, useState } from 'react';
 
-import formatDate from '../functions/Utils';
+import {formatDate} from '../functions/Utils';
 import Loading from './Loading';
 
 const Chat = ({audio, transcription, translation, chat}) => {

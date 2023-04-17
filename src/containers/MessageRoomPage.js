@@ -47,7 +47,7 @@ const MessageRoomPage = ({apiKey}) => {
                 "Authorization": `Bearer ${apiKey}`
             };
             const messages = [
-                    {"role": "system", "content": "Translate from English to Chinese"},
+                    {"role": "system", "content": "Translate from English to Traditional Chinese"},
                     {"role": "user", "content": transcription}
                 ]
             const jsonData = {messages: messages, model: chatgptModel}
@@ -72,13 +72,18 @@ const MessageRoomPage = ({apiKey}) => {
                     {"role": "system", "content": "You are a helpful assistant."},
                 ]
 
+            console.log(translations)
             // Multi-turn chats
-            for (let i = 0; i < translations.length - 1; i ++){
+            // FIXME: setState() is async, so the translations here are not updated,
+            //        so constraint should be translations.length 
+            //        to including the last translation
+            for (let i = 0; i < translations.length; i ++){
                 messages.push({"role": "user", "content": translations[i]});
                 messages.push({"role": "assistant", "content": chats[i]});
             }
             messages.push({"role": "user", "content": translation});
 
+            console.log(messages)
             const jsonData = {messages: messages, model: chatgptModel}
             const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
             console.log(response)
@@ -92,13 +97,13 @@ const MessageRoomPage = ({apiKey}) => {
 
     async function sendRequests (audioUrl, audioBlob){
         const transcription = await sendAudioRequest(audioBlob);
-        setTranscriptions([...transcriptions.slice(0, transcriptions.length), transcription]);
+        setTranscriptions([...transcriptions, transcription]);
 
         const translation = await sendTranslationRequest(transcription);
-        setTranslations([...translations.slice(0, translations.length), translation])
+        setTranslations([...translations, translation])
 
         const chat = await sendChatRequest(translation);
-        setChats([...chats.slice(0, chats.length), chat])
+        setChats([...chats, chat])
     }
 
     const addAudioElement = async function (audioBlob) {

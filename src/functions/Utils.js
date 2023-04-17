@@ -1,3 +1,5 @@
+import axios from "axios";
+
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }
@@ -18,4 +20,25 @@ function formatDate(date) {
   );
 }
 
-export default formatDate;
+async function validateApiKey(apiKey){
+  const chatgptModel = "gpt-3.5-turbo";
+  const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
+  try{
+      const headers = {
+          "content-type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+      };
+      const messages = [
+              {"role": "user", "content": "Hello!"}
+          ]
+      const jsonData = {messages: messages, model: chatgptModel}
+      const response = await axios.post(urlForChatgpt, jsonData, { headers:headers })
+      return true;
+  }
+  catch (error) {
+      console.log(error);
+      return false;
+  }
+}
+
+export {formatDate, validateApiKey};
