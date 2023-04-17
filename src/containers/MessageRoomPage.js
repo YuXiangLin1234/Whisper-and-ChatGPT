@@ -30,7 +30,6 @@ const MessageRoomPage = ({apiKey}) => {
             formData.append("file", blob , "audio.mp3")
             formData.append("model", whisperModel)
             
-            // TODO: header quote?
             const response = await axios.post(urlForWhisper, formData, { "headers":headers })
             const transcription = response.data.text;    
             return transcription
@@ -51,11 +50,10 @@ const MessageRoomPage = ({apiKey}) => {
                     {"role": "user", "content": transcription}
                 ]
             const jsonData = {messages: messages, model: chatgptModel}
-            // TODO: header quote?
             const response = await axios.post(urlForChatgpt, jsonData, { headers:headers })
-            console.log(response)
-            const translations = response.data.choices[0].message.content
-            return translations;
+            
+            const translation = response.data.choices[0].message.content
+            return translation;
         }
         catch (error) {
             console.log(error);
@@ -83,10 +81,8 @@ const MessageRoomPage = ({apiKey}) => {
             }
             messages.push({"role": "user", "content": translation});
 
-            console.log(messages)
             const jsonData = {messages: messages, model: chatgptModel}
             const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
-            console.log(response)
             const chat = response.data.choices[0].message.content
             return chat;
         }
