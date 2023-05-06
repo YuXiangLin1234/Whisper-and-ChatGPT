@@ -28,11 +28,22 @@
   color: #61dafb;
 }
 
-.ask-key-container {
+.center {
   left: 50%;
-  top: 30%;
+  top: 50%;
   transform: translate(-50%, -50%);
   position: absolute;
+}
+
+.ask-key-container {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.ask-key-component {
+  text-align:left;
 }
 
 @keyframes App-logo-spin {

@@ -13,14 +13,15 @@ function App() {
     // useScript("https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js")
     useScript("https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js")
     const [apiKey, setApiKey] = useState("");
+    const [hfToken, setHfToken] = useState("");
 
     return (
         <div className="App" style={{marginTop:"30px"}}>
-            { apiKey.length
+            { apiKey.length && hfToken.length
                 ?
-                <MessageRoomPage apiKey= {apiKey}/>
+                <MessageRoomPage apiKey={apiKey} hfToken={hfToken}/>
                 :
-                <AskKeyPage setApiKey = {setApiKey}/>
+                <AskKeyPage setApiKey={setApiKey} setHfToken={setHfToken}/>
             }
         </div>
     );

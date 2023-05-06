@@ -1,5 +1,5 @@
 {
-  "name": "chatgpt",
+  "name": "Whisper-and-ChatGPT",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://YuXiangLin1234.github.io/Whisper-and-ChatGPT",
@@ -9,6 +9,7 @@
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
     "axios": "^1.3.4",
+    "create-silent-audio": "^0.1.2",
     "dotenv-defaults": "^5.0.2",
     "gh-pages": "^5.0.0",
     "react": "^18.2.0",
