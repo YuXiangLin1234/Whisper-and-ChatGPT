@@ -115,7 +115,7 @@ async function sendTranslationRequest (transcription, apiKey) {
         };
         const messages = [
                 // TODO
-                {"role": "system", "content": "Rewrite the sentence into a fluent chinese one"},
+                {"role": "system", "content": "Rewrite the sentence into a fluent Traditional Chinese one"},
                 {"role": "user", "content": transcription}
             ]
         const jsonData = {messages: messages, model: chatgptModel}
