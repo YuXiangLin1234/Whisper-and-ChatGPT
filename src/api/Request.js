@@ -1,11 +1,12 @@
 import fs from "fs";
+import Qs from 'qs';
 import axios from "axios";
 
 import { createSilentAudio } from 'create-silent-audio';
 
-
 const chatgptModel = "gpt-3.5-turbo";
-const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
+const urlForWhisper = "https://os859pda3vi31cbq.us-east-1.aws.endpoints.huggingface.cloud";
+// const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
 const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
 const whisperModel = "whisper-1";
@@ -32,10 +33,11 @@ async function validateApiKey(apiKey){
 async function validateHfToken(hfToken){
     try{
 		const fakeAudio = createSilentAudio(5, 44100);
-        const blob = new Blob([fakeAudio], {type: "audio/mp3"});
+        const blob = new Blob([fakeAudio], {type: "audio/webm;codecs=opus"});
 
         const headers = {
-			"Authorization": `Bearer ${hfToken}`
+			"Authorization": `Bearer ${hfToken}`,
+            "Content-Type": "audio/webm;codecs=opus"
 		};   
 
 		const response = await axios.post(urlForWhisper, blob, {"headers": headers})
@@ -53,10 +55,11 @@ async function validateHfToken(hfToken){
 async function checkModelStatus(hfToken){
     try{
 		const fakeAudio = createSilentAudio(5, 44100);
-        const blob = new Blob([fakeAudio], {type: "audio/mp3"});
+        const blob = new Blob([fakeAudio], {type: "audio/webm;codecs=opus"});
 
         const headers = {
-			"Authorization": `Bearer ${hfToken}`
+			"Authorization": `Bearer ${hfToken}`,
+            "Content-Type": "audio/webm;codecs=opus"
 		};   
 
 		const response = await axios.post(urlForWhisper, blob, {"headers": headers})
@@ -96,9 +99,17 @@ const sendAudioRequestOpenAi = async function (blob, apiKey) {
 const sendAudioRequest = async function (blob, hfToken) {      
     try{
         const headers = {
-            "Authorization": `Bearer ${hfToken}`
+            "Authorization": `Bearer ${hfToken}`,
+            "Content-Type": "audio/webm;codecs=opus"
         };    
-        const response = await axios.post(urlForWhisper, blob, {"headers": headers})
+        
+        // For end-point api, which is x-www-form-urlencoded
+        const headers_string = Qs.stringify({
+            "Authorization": JSON.stringify(`Bearer ${hfToken}`),
+            "Content-Type": JSON.stringify("audio/webm;codecs=opus")
+        })
+
+        const response = await axios.post(urlForWhisper, blob, {"headers": headers_string})
         const transcription = response.data.text;    
         return transcription
     }

@@ -12,6 +12,7 @@
     "create-silent-audio": "^0.1.2",
     "dotenv-defaults": "^5.0.2",
     "gh-pages": "^5.0.0",
+    "qs": "^6.11.1",
     "react": "^18.2.0",
     "react-audio-voice-recorder": "^1.0.5",
     "react-dom": "^18.2.0",
