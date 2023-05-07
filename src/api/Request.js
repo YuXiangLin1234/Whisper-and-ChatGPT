@@ -5,12 +5,13 @@ import axios from "axios";
 import { createSilentAudio } from 'create-silent-audio';
 
 const chatgptModel = "gpt-3.5-turbo";
-const urlForWhisper = "https://os859pda3vi31cbq.us-east-1.aws.endpoints.huggingface.cloud";
+const corsProxy = "https://proxy.cors.sh/"
+// const urlForWhisper = `${corsProxy}https://os859pda3vi31cbq.us-east-1.aws.endpoints.huggingface.cloud`;
 // const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
 const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
 const whisperModel = "whisper-1";
-// const urlForWhisper = "https://api.openai.com/v1/audio/transcriptions";
+const urlForWhisper = "https://api.openai.com/v1/audio/transcriptions";
 async function validateApiKey(apiKey){
   try{
       const headers = {
@@ -86,6 +87,7 @@ const sendAudioRequestOpenAi = async function (blob, apiKey) {
         const formData = new FormData();
         formData.append("file", blob , "audio.mp3")
         formData.append("model", whisperModel)
+        formData.append("language", "zh")
         
         const response = await axios.post(urlForWhisper, formData, {"headers": headers})
         const transcription = response.data.text;    
@@ -99,17 +101,13 @@ const sendAudioRequestOpenAi = async function (blob, apiKey) {
 const sendAudioRequest = async function (blob, hfToken) {      
     try{
         const headers = {
-            "Authorization": `Bearer ${hfToken}`,
-            "Content-Type": "audio/webm;codecs=opus"
+            "authorization": `Bearer ${hfToken}`,
+            "content-type": "audio/webm;codecs=opus",
+            "accept": "application/json",
+            "x-cors-api-key": "temp_e9acbd2cfed7629ec97869ce4eb4c48b"           
         };    
         
-        // For end-point api, which is x-www-form-urlencoded
-        const headers_string = Qs.stringify({
-            "Authorization": JSON.stringify(`Bearer ${hfToken}`),
-            "Content-Type": JSON.stringify("audio/webm;codecs=opus")
-        })
-
-        const response = await axios.post(urlForWhisper, blob, {"headers": headers_string})
+        const response = await axios.post(urlForWhisper, blob, {"headers": headers, "data": {}})
         const transcription = response.data.text;    
         return transcription
     }

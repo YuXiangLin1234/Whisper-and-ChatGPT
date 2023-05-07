@@ -9,7 +9,7 @@ import { AudioRecorder } from 'react-audio-voice-recorder';
 import Chat from '../components/Chat';
 import Loading from '../components/Loading';
 
-import { checkModelStatus, sendAudioRequest, sendTranslationRequest, sendChatRequest } from '../api/Request';
+import { checkModelStatus, sendAudioRequest, sendTranslationRequest, sendChatRequest, sendAudioRequestOpenAi } from '../api/Request';
 
 const MessageRoomPage = ({apiKey, hfToken}) => {
 
@@ -21,7 +21,11 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
     const [audioClickAble, setAudioClickAble] = useState(false);
     
     async function sendRequests (audioUrl, audioBlob){
-        const transcription = await sendAudioRequest(audioBlob, hfToken);
+        // Hugging face
+        // const transcription = await sendAudioRequest(audioBlob, hfToken);
+        
+        // OpenAI whisper
+        const transcription = await sendAudioRequestOpenAi(audioBlob, apiKey);
         setTranscriptions([...transcriptions, transcription]);
 
         const translation = await sendTranslationRequest(transcription, apiKey);
@@ -51,17 +55,19 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
     }
 
     useEffect(() => {
-        const checkModelStatusWrapper = async() =>{
-            const response = await checkModelStatus(hfToken)  
-            console.log(response)
-            if (response === true) 
-                setModelReady(true)
-            else
-                setTimeout(checkModelStatusWrapper, 8000);
+        // For Hugging face Whisper
+        // const checkModelStatusWrapper = async() =>{
+        //     const response = await checkModelStatus(hfToken)  
+        //     console.log(response)
+        //     if (response === true) 
+        //         setModelReady(true)
+        //     else
+        //         setTimeout(checkModelStatusWrapper, 8000);
             
-            return response      
-        }
-        checkModelStatusWrapper();
+        //     return response      
+        // }
+        // checkModelStatusWrapper();
+        setModelReady(true)
     }, []);
 
     return (
