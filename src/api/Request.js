@@ -154,7 +154,7 @@ async function sendChatRequest(translation, translations, chats, apiKey) {
                                                 \n\n請你利用獲得的訊息，來建立看診目標，可以從提出開放式\
                                                 的問題開始，如果上述關於發病、誘發原因、性質、症狀散布、\
                                                 嚴重程度有不清楚的地方，也可以請病人回答，然後觀察病人的\
-                                                回覆，並給出建議。"},
+                                                回覆，並用繁體中文給出建議。"},
             ]
 
         console.log(translations)
