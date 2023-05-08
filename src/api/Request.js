@@ -78,23 +78,30 @@ async function checkModelStatus(hfToken){
 }
 
 const sendAudioRequestOpenAi = async function (blob, apiKey) {      
+    const headers = {
+        "content-type":  "multipart/form-data",
+        "Authorization": `Bearer ${apiKey}`
+    //   "Authorization": `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+    };    
+    const formData = new FormData();
+    formData.append("file", blob , "audio.mp3")
+    formData.append("model", whisperModel)
+    formData.append("language", "zh")
+
     try{
-        const headers = {
-            "content-type":  "multipart/form-data",
-            "Authorization": `Bearer ${apiKey}`
-        //   "Authorization": `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
-        };    
-        const formData = new FormData();
-        formData.append("file", blob , "audio.mp3")
-        formData.append("model", whisperModel)
-        formData.append("language", "zh")
-        
         const response = await axios.post(urlForWhisper, formData, {"headers": headers})
         const transcription = response.data.text;    
         return transcription
     }
     catch (error){
-        console.log(error);
+		console.log(error)
+        if (error.response.status === 429){
+            const response = await axios.post(urlForWhisper, formData, {"headers": headers})
+            const transcription = response.data.text 
+            return transcription
+        }
+        else 
+            return ""
     }
 }
 
@@ -117,64 +124,77 @@ const sendAudioRequest = async function (blob, hfToken) {
 }
 
 async function sendTranslationRequest (transcription, apiKey) {
+    const headers = {
+        "content-type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+    };
+    const messages = [
+            // TODO
+            {"role": "system", "content": "Rewrite the sentence into a fluent Traditional Chinese one"},
+            {"role": "user", "content": transcription}
+        ]
+    const jsonData = {messages: messages, model: chatgptModel}
     try{
-        const headers = {
-            "content-type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
-        };
-        const messages = [
-                // TODO
-                {"role": "system", "content": "Rewrite the sentence into a fluent Traditional Chinese one"},
-                {"role": "user", "content": transcription}
-            ]
-        const jsonData = {messages: messages, model: chatgptModel}
         const response = await axios.post(urlForChatgpt, jsonData, { headers:headers })
-        console.log(messages)
         const translation = response.data.choices[0].message.content
         return translation;
     }
     catch (error) {
         console.log(error);
+        if (error.response.status === 429){
+            const response = await axios.post(urlForChatgpt, jsonData, { headers:headers })
+            const translation = response.data.choices[0].message.content
+            return translation;
+        }
+        else 
+            return ""        
     }
 }
 
 async function sendChatRequest(translation, translations, chats, apiKey) {
-    try {
-        const headers = {
-            "content-type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
-        };
-        const messages = [
-                 {"role": "system", "content": "你是一個診前問診系統，病人會跟你說他目前的身體狀況，\
-                                                病人通常會跟你講以下幾件事情:\n\n發病：什麼時候開始\
-                                                注意到有症狀產生？誘發原因：症狀開始出現的時間點附近，\
-                                                病人在什麼環境做了哪些事情？性質：症狀出現時的感覺、\
-                                                症狀的特徵症狀散布：出現症狀的部位是否改變、或者隨著\
-                                                身體的移動而有變化？嚴重程度：症狀何時最嚴重？有多嚴重？\
-                                                \n\n請你利用獲得的訊息，來建立看診目標，可以從提出開放式\
-                                                的問題開始，如果上述關於發病、誘發原因、性質、症狀散布、\
-                                                嚴重程度有不清楚的地方，也可以請病人回答，然後觀察病人的\
-                                                回覆，並用繁體中文給出建議。"},
-            ]
+    const headers = {
+        "content-type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+    };
+    const messages = [
+                {"role": "system", "content": "你是一個診前問診系統，病人會跟你說他目前的身體狀況，\
+                                            病人通常會跟你講以下幾件事情:\n\n發病：什麼時候開始\
+                                            注意到有症狀產生？誘發原因：症狀開始出現的時間點附近，\
+                                            病人在什麼環境做了哪些事情？性質：症狀出現時的感覺、\
+                                            症狀的特徵症狀散布：出現症狀的部位是否改變、或者隨著\
+                                            身體的移動而有變化？嚴重程度：症狀何時最嚴重？有多嚴重？\
+                                            \n\n請你利用獲得的訊息，來建立看診目標，可以從提出開放式\
+                                            的問題開始，如果上述關於發病、誘發原因、性質、症狀散布、\
+                                            嚴重程度有不清楚的地方，也可以請病人回答，然後觀察病人的\
+                                            回覆，並用繁體中文給出建議。"},
+        ]
 
-        console.log(translations)
-        // Multi-turn chats
-        // FIXME: setState() is async, so the translations here are not updated,
-        //        so constraint should be translations.length 
-        //        to including the last translation
-        for (let i = 0; i < translations.length; i ++){
-            messages.push({"role": "user", "content": translations[i]});
-            messages.push({"role": "assistant", "content": chats[i]});
-        }
-        messages.push({"role": "user", "content": translation});
-        console.log(messages)
-        const jsonData = {messages: messages, model: chatgptModel}
+    console.log(translations)
+    // Multi-turn chats
+    // FIXME: setState() is async, so the translations here are not updated,
+    //        so constraint should be translations.length 
+    //        to including the last translation
+    for (let i = 0; i < translations.length; i ++){
+        messages.push({"role": "user", "content": translations[i]});
+        messages.push({"role": "assistant", "content": chats[i]});
+    }
+    messages.push({"role": "user", "content": translation});
+    console.log(messages)
+    const jsonData = {messages: messages, model: chatgptModel}
+    try {
         const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
         const chat = response.data.choices[0].message.content
         return chat;
     }
     catch (error){
         console.log(error)
+        if (error.response.status === 429){
+            const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
+            const chat = response.data.choices[0].message.content
+            return chat;
+        }
+        else 
+            return ""    
     }
 }
 
