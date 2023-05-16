@@ -1,8 +1,6 @@
 import '../App.css';
-import fs from "fs";
 import React from "react";
-import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import { AudioRecorder } from 'react-audio-voice-recorder';
 
@@ -25,7 +23,7 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
         // const transcription = await sendAudioRequest(audioBlob, hfToken);
         
         // OpenAI whisper
-        const transcription = await sendAudioRequestOpenAi(audioBlob, apiKey);
+        const transcription = await sendAudioRequest(audioBlob, apiKey);
         setTranscriptions([...transcriptions, transcription]);
 
         const translation = await sendTranslationRequest(transcription, apiKey);

@@ -1,8 +1,8 @@
 import '../App.css';
 import React from "react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
-import { validateApiKey, validateHfToken } from '../api/Request';
+import { validateHfToken, validateApiKey } from '../api/Request';
 
 const AskKeyPage = ({setApiKey, setHfToken}) => {
 
@@ -26,9 +26,9 @@ const AskKeyPage = ({setApiKey, setHfToken}) => {
                 emptyInputRef.current.style.display = "none";
             
             const apiKeyValid = await validateApiKey(apiKey);
-            // const hfTokenValid = await validateHfToken(hfToken)
+            const hfTokenValid = await validateHfToken(hfToken)
             // const apiKeyValid = true;
-            const hfTokenValid = true;
+            // const hfTokenValid = true;
             
             if (apiKeyValid === true && hfTokenValid === true){
                 setApiKey(apiKey)

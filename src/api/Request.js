@@ -1,17 +1,20 @@
-import fs from "fs";
-import Qs from 'qs';
 import axios from "axios";
 
 import { createSilentAudio } from 'create-silent-audio';
 
+// OpenAI chatgpt
 const chatgptModel = "gpt-3.5-turbo";
-const corsProxy = "https://proxy.cors.sh/"
-// const urlForWhisper = `${corsProxy}https://os859pda3vi31cbq.us-east-1.aws.endpoints.huggingface.cloud`;
-// const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
 const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
+// Huggingface whisper
+const corsProxy = "https://proxy.cors.sh/"
+// const urlForWhisper = `${corsProxy}https://os859pda3vi31cbq.us-east-1.aws.endpoints.huggingface.cloud`;
+const urlForWhisper = "https://rcnala47j1uzi9t3.us-east-1.aws.endpoints.huggingface.cloud";
+// const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
+
+// OpenAI whisper
 const whisperModel = "whisper-1";
-const urlForWhisper = "https://api.openai.com/v1/audio/transcriptions";
+// const urlForWhisper = "https://api.openai.com/v1/audio/transcriptions";
 async function validateApiKey(apiKey){
   try{
       const headers = {
@@ -111,7 +114,7 @@ const sendAudioRequest = async function (blob, hfToken) {
             "authorization": `Bearer ${hfToken}`,
             "content-type": "audio/webm;codecs=opus",
             "accept": "application/json",
-            "x-cors-api-key": "temp_e9acbd2cfed7629ec97869ce4eb4c48b"           
+            // "x-cors-api-key": "temp_e9acbd2cfed7629ec97869ce4eb4c48b"           
         };    
         
         const response = await axios.post(urlForWhisper, blob, {"headers": headers, "data": {}})

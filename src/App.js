@@ -1,7 +1,7 @@
 import './App.css';
 import React from "react";
 // import dotenv_defaults from "dotenv-defaults";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import MessageRoomPage from "./containers/MessageRoomPage"
 import AskKeyPage from './containers/AskKeyPage';
