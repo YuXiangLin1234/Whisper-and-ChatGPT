@@ -60,10 +60,58 @@ audio {
   height: 30px;
 }
 
+/* Copy from Tailwind */
+.button-rectangle {
+  background-color: 	#9F35FF;
+  border: 1px solid transparent;
+  border-radius: 25px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.5rem;
+  padding: .75rem 1.2rem;
+  text-align: center;
+  text-decoration: none #6B7280 solid;
+  text-decoration-thickness: auto;
+  transition-duration: .2s;
+  transition-property: background-color,border-color,color,fill,stroke;
+  transition-timing-function: cubic-bezier(.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: auto;
+  margin-top: 20px;  
+}
+
+
+.button-rectangle:hover {
+  background-color: #CA8EFF;
+}
+
+.button-rectangle:focus {
+  box-shadow: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .button-rectangle {
+    padding: .75rem 1.5rem;
+  }
+}
+
 .circle-button {
   border-radius: 50%;
   border:1px solid rgb(209, 206, 206);
   width: 40px;
+}
+
+.disabled-button {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .circle-button:hover {

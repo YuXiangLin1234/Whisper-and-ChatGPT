@@ -8,8 +8,8 @@ const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
 // Huggingface whisper
 const corsProxy = "https://proxy.cors.sh/"
-// const urlForWhisper = `${corsProxy}https://os859pda3vi31cbq.us-east-1.aws.endpoints.huggingface.cloud`;
-const urlForWhisper = "https://rcnala47j1uzi9t3.us-east-1.aws.endpoints.huggingface.cloud";
+const urlForWhisper = `${corsProxy}https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud`;
+// const urlForWhisper = "https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud";
 // const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
 
 // OpenAI whisper
@@ -41,7 +41,9 @@ async function validateHfToken(hfToken){
 
         const headers = {
 			"Authorization": `Bearer ${hfToken}`,
-            "Content-Type": "audio/webm;codecs=opus"
+            "Content-Type": "audio/webm;codecs=opus",
+            // This key will only be valid for 3 days.
+            "x-cors-api-key": "temp_35338bb79c44d4bea647927ccca5cb2f"    
 		};   
 
 		const response = await axios.post(urlForWhisper, blob, {"headers": headers})
@@ -63,7 +65,9 @@ async function checkModelStatus(hfToken){
 
         const headers = {
 			"Authorization": `Bearer ${hfToken}`,
-            "Content-Type": "audio/webm;codecs=opus"
+            "Content-Type": "audio/webm;codecs=opus",
+            // This key will only be valid for 3 days.
+            "x-cors-api-key": "temp_35338bb79c44d4bea647927ccca5cb2f"    
 		};   
 
 		const response = await axios.post(urlForWhisper, blob, {"headers": headers})
@@ -114,7 +118,8 @@ const sendAudioRequest = async function (blob, hfToken) {
             "authorization": `Bearer ${hfToken}`,
             "content-type": "audio/webm;codecs=opus",
             "accept": "application/json",
-            // "x-cors-api-key": "temp_e9acbd2cfed7629ec97869ce4eb4c48b"           
+            // This key will only be valid for 3 days.
+            "x-cors-api-key": "temp_35338bb79c44d4bea647927ccca5cb2f"           
         };    
         
         const response = await axios.post(urlForWhisper, blob, {"headers": headers, "data": {}})
@@ -130,6 +135,7 @@ async function sendTranslationRequest (transcription, apiKey) {
     const headers = {
         "content-type": "application/json",
         "Authorization": `Bearer ${apiKey}`
+        // "Authorization": `Bearer ${apiKey}`
     };
     const messages = [
             // TODO
@@ -201,4 +207,83 @@ async function sendChatRequest(translation, translations, chats, apiKey) {
     }
 }
 
-export {validateApiKey, checkModelStatus, sendAudioRequest, sendChatRequest, sendTranslationRequest, sendAudioRequestOpenAi, validateHfToken};
+async function sendSummaryRequest(translations, apiKey) {
+    const headers = {
+        "content-type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+    };
+    const messages = [
+                {"role": "system", "content": "你是一個重點整理系統，使用者會跟你說他目前的身體狀況，\
+                                            通常會包含以下幾個面向:\n\n發病：什麼時候開始\
+                                            注意到有症狀產生？誘發原因：症狀開始出現的時間點附近，\
+                                            病人在什麼環境做了哪些事情？性質：症狀出現時的感覺、\
+                                            症狀的特徵症狀散布：出現症狀的部位是否改變、或者隨著\
+                                            身體的移動而有變化？嚴重程度：症狀何時最嚴重？有多嚴重？\
+                                            \n\n請你利用獲得的訊息，針對這些面向進行重點整理，\
+                                            最後用繁體中文給出總結。"},
+        ]
+
+    for (let i = 0; i < translations.length; i ++){
+        messages.push({"role": "user", "content": translations[i]});
+    }
+    console.log(messages)
+    const jsonData = {messages: messages, model: chatgptModel}
+    try {
+        const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
+        const chat = response.data.choices[0].message.content
+        return chat;
+    }
+    catch (error){
+        console.log(error)
+        if (error.response.status === 429){
+            const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
+            const chat = response.data.choices[0].message.content
+            return chat;
+        }
+        else 
+            return ""    
+    }
+}
+
+async function sendClinicRequest(translations, apiKey) {
+    const headers = {
+        "content-type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+    };
+    const messages = [
+                {"role": "system", "content": "根據病人的描述及門診時間表，找出適合他的醫生並 \
+                                            告知對應的診別及門診時間，請以繁體中文回答。"},
+        ]
+
+    messages.push({"role": "user", "content": "病人的描述："});
+    for (let i = 0; i < translations.length; i ++){
+        messages.push({"role": "user", "content": translations[i]});
+    }
+
+    messages.push({"role": "user", "content": "門診時間表："});
+    for (let i = 0; i < translations.length; i ++){
+        messages.push({"role": "user", "content": translations[i]});
+    }    
+    console.log(messages)
+    const jsonData = {messages: messages, model: chatgptModel}
+    try {
+        const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
+        const chat = response.data.choices[0].message.content
+        return chat;
+    }
+    catch (error){
+        console.log(error)
+        if (error.response.status === 429){
+            const response = await axios.post(urlForChatgpt, jsonData, {headers: headers} )
+            const chat = response.data.choices[0].message.content
+            return chat;
+        }
+        else 
+            return ""    
+    }
+}
+
+
+export {validateApiKey, checkModelStatus, sendAudioRequest,
+         sendChatRequest, sendTranslationRequest, sendAudioRequestOpenAi,
+         validateHfToken, sendSummaryRequest, sendClinicRequest};

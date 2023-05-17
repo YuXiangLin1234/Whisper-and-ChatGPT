@@ -19,5 +19,16 @@ function formatDate(date) {
   );
 }
 
+function disableButton(buttonRef) {
+  buttonRef.current.style.cursor = "not-allowed";
+  buttonRef.current.style.pointerEvents = "none";
+  buttonRef.current.style.opacity = "0.6";
+}
 
-export {formatDate};
+function enableButton(buttonRef) {
+  buttonRef.current.style.cursor = "pointer";
+  buttonRef.current.style.pointerEvents = "auto";
+  buttonRef.current.style.opacity = "1";
+}
+
+export {formatDate, disableButton, enableButton};
