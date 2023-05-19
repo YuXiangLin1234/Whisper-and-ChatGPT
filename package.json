@@ -5,6 +5,8 @@
   "homepage": "https://YuXiangLin1234.github.io/Whisper-and-ChatGPT",
   "type": "module",
   "dependencies": {
+    "@react-pdf/font": "2.2.0",
+    "@react-pdf/renderer": "^3.1.9",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -19,6 +21,10 @@
     "react-error-overlay": "6.0.9",
     "react-scripts": "4.0.3",
     "web-vitals": "^3.3.0"
+  },
+  "resolutions": {
+      "@react-pdf/font": "2.2.1",
+      "@react-pdf/pdfkit": "2.1.0"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",

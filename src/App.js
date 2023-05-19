@@ -19,7 +19,7 @@ function App() {
         <div className="App" style={{marginTop:"30px"}}>
             { apiKey.length && hfToken.length
                 ?
-                <MessageRoomPage apiKey={apiKey} hfToken={hfToken}/>
+                <MessageRoomPage apiKey={apiKey} hfToken={hfToken} setApiKey={setApiKey} setHfToken={setHfToken}/>
                 :
                 <AskKeyPage setApiKey={setApiKey} setHfToken={setHfToken}/>
             }

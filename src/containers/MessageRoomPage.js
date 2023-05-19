@@ -3,17 +3,19 @@ import React from "react";
 import { useEffect, useState, useRef } from "react";
 
 import { AudioRecorder } from 'react-audio-voice-recorder';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 
 import Chat from '../components/Chat';
+import Clinic from '../components/Clinic';
 import Loading from '../components/Loading';
+import ReportViewer from '../components/ReportViewer';
 
 import { enableButton, disableButton } from '../functions/Utils';
 import { checkModelStatus, sendAudioRequest, sendTranslationRequest, 
         sendChatRequest, sendAudioRequestOpenAi, sendSummaryRequest,
         sendClinicRequest } from '../api/Request';
 
-
-const MessageRoomPage = ({apiKey, hfToken}) => {
+const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
 
     const [modelReady, setModelReady] = useState(false);
     const [audios, setAudios] = useState([]);
@@ -21,7 +23,8 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
     const [translations, setTranslations] = useState([]);
     const [chats, setChats] = useState([]);
     const [summary, setSummary] = useState("");
-    
+    const [clinic, setClinic] = useState("");
+
     const summaryButtonRef = useRef();
     const reportLoadingRef = useRef();
     const bottomLineRef = useRef();
@@ -69,11 +72,20 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
         bottomLineRef.current.style.display = "none";
         summaryButtonRef.current.style.display = "none";
         reportLoadingRef.current.style.display = "inline";
-        
+
         const summary = await sendSummaryRequest(translations, apiKey);
         setSummary(summary);
         console.log(summary)
+        const clinic = await sendClinicRequest(translations, apiKey);
+        setClinic(clinic);
+        console.log(clinic)
+        
         reportLoadingRef.current.style.display = "none";
+    }
+
+    const continueConversation = () => { 
+        setSummary("")
+        setClinic("")
     }
 
     const resetConversation = () => {
@@ -83,6 +95,12 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
         setTranslations([]);
         setChats([]);
         setSummary([]);
+    }
+
+    const endConversation = () => { 
+        resetConversation()
+        setHfToken("")
+        setApiKey("")
     }
 
     useEffect(() => {
@@ -103,41 +121,61 @@ const MessageRoomPage = ({apiKey, hfToken}) => {
 
     return (
         <div className="App" style={{marginTop:"30px"}}>
-            {
-            modelReady 
+            {            
+            summary.length === 0
             ?
-                <>
-                <div className='msg-container'>
-                  {
-                    audios.map((audio, index)=> (
-                        <Chat key={index} audio={audios[index]} transcription={transcriptions[index]} 
-                                translation={translations[index]} chat={chats[index]}/>
-                    ))
-                  }
-                    <button className="button-rectangle" ref={summaryButtonRef} onClick={generateReport} style={{"display": "none"}}>生成病理報告</button>
-                    <div className='center'  ref={reportLoadingRef}  style={{"display": "none"}}>
-                        <h2>Wait for report generation</h2>
-                        <Loading/>
-                    </div>
-                </div>
-                <div ref={bottomLineRef}>
-                    <div className='bottom-line'></div>
-                    <div className='bottom-line-button'>
-                        <div ref={recordButtonRef}>
-                            <AudioRecorder onRecordingComplete={addAudioElement}/>
+                modelReady 
+                ?
+                    <>
+                    <div className='msg-container'>
+                    {
+                        audios.map((audio, index)=> (
+                            <Chat key={index} audio={audios[index]} transcription={transcriptions[index]} 
+                                    translation={translations[index]} chat={chats[index]}/>
+                        ))
+                    }
+                        <button className="button-rectangle" ref={summaryButtonRef} onClick={generateReport} style={{"display": "none"}}>生成病理報告</button>
+                        <div className='center'  ref={reportLoadingRef}  style={{"display": "none"}}>
+                            <h2>Wait for report generation</h2>
+                            <Loading/>
                         </div>
-                        <button className='circle-button' ref={clearButtonRef} onClick={resetConversation}  >
-                            <ion-icon name="trash" style={{fontSize: "17px"}}></ion-icon>
-                        </button>
                     </div>
-                </div>
-                </>
+                    <div ref={bottomLineRef}>
+                        <div className='bottom-line'></div>
+                        <div className='bottom-line-button'>
+                            <div ref={recordButtonRef}>
+                                <AudioRecorder onRecordingComplete={addAudioElement}/>
+                            </div>
+                            <button className='circle-button' ref={clearButtonRef} onClick={resetConversation}  >
+                                <ion-icon name="trash" style={{fontSize: "17px"}}></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                    </>
+                :
+                    <div className='center'>
+                    <h2>Wait for model loading</h2>
+                    <Loading/>
+                    </div>
             :
-                <div className='center'>
-                <h2>Wait for model loading</h2>
-                <Loading/>
+            <div>
+                {/* PDFViewer must be outside ReportViewer or the error occurs */}
+                <h2>問診紀錄</h2>
+                <PDFViewer>
+                    <ReportViewer translations={translations} chats={chats} summary={summary}/>
+                </PDFViewer>
+                <div className='msg-container'>
+                    <Clinic clinic={clinic}></Clinic>
                 </div>
-            }
+                <button className='button-ellipse' onClick={continueConversation}>繼續問診</button>       
+                <PDFDownloadLink document={<ReportViewer translations={translations} chats={chats} summary={summary}/>} fileName="ChatGPT.pdf">
+                {({ blob, url, loading, error }) =>
+                    loading ? '' : <button className='button-ellipse margin-left'>下載問診紀錄</button>
+                }
+                </PDFDownloadLink>
+                <button className='button-ellipse margin-left' onClick={endConversation}>結束問診</button>
+            </div>
+            }   
         </div>
     );
 }
