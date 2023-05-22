@@ -8,7 +8,7 @@ const Clinic = ({clinic}) => {
 	return (
 		<div style={{margin:"20px"}}>
 			<div className='msg-page'>
-				<div className="clinic-chats center">
+				<div className="clinic-chats">
 					{
 					clinic.length > 0
 						?
@@ -23,7 +23,10 @@ const Clinic = ({clinic}) => {
 							</div>
 						</>
 						: 
-						<Loading/>					
+						<div className='center'>
+						<h2>Wait for clinic scheduling</h2>
+						<Loading/>
+						</div>				
 					}
 				</div>
 			</div>

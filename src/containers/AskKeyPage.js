@@ -27,8 +27,6 @@ const AskKeyPage = ({setApiKey, setHfToken}) => {
             
             const apiKeyValid = await validateApiKey(apiKey);
             const hfTokenValid = await validateHfToken(hfToken)
-            // const apiKeyValid = true;
-            // const hfTokenValid = true;
             
             if (apiKeyValid === true && hfTokenValid === true){
                 setApiKey(apiKey)

@@ -31,4 +31,21 @@ function enableButton(buttonRef) {
   buttonRef.current.style.opacity = "1";
 }
 
-export {formatDate, disableButton, enableButton};
+const onRenderDocument = ({blob, filename}) => {
+  var blobUrl = URL.createObjectURL(blob);
+  saveDocument(blobUrl, filename);
+};
+
+const saveDocument = (function () {
+  var a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  return function (blob, fileName) {
+    a.href = blob;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(blob);
+  };
+}());
+
+export {formatDate, disableButton, enableButton, onRenderDocument, saveDocument};

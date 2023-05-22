@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { createSilentAudio } from 'create-silent-audio';
+import ClinicSchedule from "../data/ClinicSchedule";
 
 // OpenAI chatgpt
 const chatgptModel = "gpt-3.5-turbo";
@@ -8,6 +9,8 @@ const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
 // Huggingface whisper
 const corsProxy = "https://proxy.cors.sh/"
+// TODO: This key will only valid for 3 days
+const corsApiKey = "temp_dad43d1e9198464889afa344e26cbe2f"
 const urlForWhisper = `${corsProxy}https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud`;
 // const urlForWhisper = "https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud";
 // const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
@@ -42,8 +45,7 @@ async function validateHfToken(hfToken){
         const headers = {
 			"Authorization": `Bearer ${hfToken}`,
             "Content-Type": "audio/webm;codecs=opus",
-            // This key will only be valid for 3 days.
-            "x-cors-api-key": "temp_35338bb79c44d4bea647927ccca5cb2f"    
+            "x-cors-api-key": corsApiKey    
 		};   
 
 		const response = await axios.post(urlForWhisper, blob, {"headers": headers})
@@ -66,8 +68,7 @@ async function checkModelStatus(hfToken){
         const headers = {
 			"Authorization": `Bearer ${hfToken}`,
             "Content-Type": "audio/webm;codecs=opus",
-            // This key will only be valid for 3 days.
-            "x-cors-api-key": "temp_35338bb79c44d4bea647927ccca5cb2f"    
+            "x-cors-api-key": corsApiKey   
 		};   
 
 		const response = await axios.post(urlForWhisper, blob, {"headers": headers})
@@ -118,8 +119,7 @@ const sendAudioRequest = async function (blob, hfToken) {
             "authorization": `Bearer ${hfToken}`,
             "content-type": "audio/webm;codecs=opus",
             "accept": "application/json",
-            // This key will only be valid for 3 days.
-            "x-cors-api-key": "temp_35338bb79c44d4bea647927ccca5cb2f"           
+            "x-cors-api-key": corsApiKey           
         };    
         
         const response = await axios.post(urlForWhisper, blob, {"headers": headers, "data": {}})
@@ -135,7 +135,6 @@ async function sendTranslationRequest (transcription, apiKey) {
     const headers = {
         "content-type": "application/json",
         "Authorization": `Bearer ${apiKey}`
-        // "Authorization": `Bearer ${apiKey}`
     };
     const messages = [
             // TODO
@@ -213,15 +212,14 @@ async function sendSummaryRequest(translations, apiKey) {
         "Authorization": `Bearer ${apiKey}`
     };
     const messages = [
-                {"role": "system", "content": "你是一個重點整理系統，使用者會跟你說他目前的身體狀況，\
-                                            通常會包含以下幾個面向:\n\n發病：什麼時候開始\
-                                            注意到有症狀產生？誘發原因：症狀開始出現的時間點附近，\
-                                            病人在什麼環境做了哪些事情？性質：症狀出現時的感覺、\
-                                            症狀的特徵症狀散布：出現症狀的部位是否改變、或者隨著\
-                                            身體的移動而有變化？嚴重程度：症狀何時最嚴重？有多嚴重？\
-                                            \n\n請你利用獲得的訊息，針對這些面向進行重點整理，\
-                                            最後用繁體中文給出總結。"},
+                {"role": "system", "content": "你是一個重點整理系統，病人會跟你說他目前的身體狀況，\
+                                                通常會包含以下 4 個面向:\n\n發病時間、症狀的誘發原因、\
+                                                症狀的性質、嚴重程度 。請你利用獲得的訊息，針對這些面向 \
+                                                進行重點整理，最後用繁體中文給出總結（你不需要給出建議，\
+                                                只需要客觀的統整重點即可）。"},
         ]
+
+    messages.push({"role": "user", "content": "病人的描述："})
 
     for (let i = 0; i < translations.length; i ++){
         messages.push({"role": "user", "content": translations[i]});
@@ -251,8 +249,8 @@ async function sendClinicRequest(translations, apiKey) {
         "Authorization": `Bearer ${apiKey}`
     };
     const messages = [
-                {"role": "system", "content": "根據病人的描述及門診時間表，找出適合他的醫生並 \
-                                            告知對應的診別及門診時間，請以繁體中文回答。"},
+                {"role": "system", "content": "根據病人的描述及門診時間表，找出專長為病人症狀的醫生 \
+                                                並告知對應的診別及門診時間。請以繁體中文回答。"},
         ]
 
     messages.push({"role": "user", "content": "病人的描述："});
@@ -261,8 +259,8 @@ async function sendClinicRequest(translations, apiKey) {
     }
 
     messages.push({"role": "user", "content": "門診時間表："});
-    for (let i = 0; i < translations.length; i ++){
-        messages.push({"role": "user", "content": translations[i]});
+    for (let i = 0; i < ClinicSchedule.length; i ++){
+        messages.push({"role": "user", "content": ClinicSchedule[i]});
     }    
     console.log(messages)
     const jsonData = {messages: messages, model: chatgptModel}
@@ -282,7 +280,6 @@ async function sendClinicRequest(translations, apiKey) {
             return ""    
     }
 }
-
 
 export {validateApiKey, checkModelStatus, sendAudioRequest,
          sendChatRequest, sendTranslationRequest, sendAudioRequestOpenAi,

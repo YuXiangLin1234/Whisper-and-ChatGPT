@@ -71,16 +71,15 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
     const generateReport = async function() {
         bottomLineRef.current.style.display = "none";
         summaryButtonRef.current.style.display = "none";
-        reportLoadingRef.current.style.display = "inline";
-
+        
         const summary = await sendSummaryRequest(translations, apiKey);
+        reportLoadingRef.current.style.display = "none";
         setSummary(summary);
         console.log(summary)
+        
         const clinic = await sendClinicRequest(translations, apiKey);
         setClinic(clinic);
         console.log(clinic)
-        
-        reportLoadingRef.current.style.display = "none";
     }
 
     const continueConversation = () => { 
@@ -134,8 +133,8 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
                                     translation={translations[index]} chat={chats[index]}/>
                         ))
                     }
-                        <button className="button-rectangle" ref={summaryButtonRef} onClick={generateReport} style={{"display": "none"}}>生成病理報告</button>
-                        <div className='center'  ref={reportLoadingRef}  style={{"display": "none"}}>
+                        <button className="button-ellipse" ref={summaryButtonRef} onClick={generateReport} style={{"display": "none", "marginBottom":"40px", "marginTop":"40px" }}>生成問診報告</button>
+                        <div className='center'  ref={reportLoadingRef}  style={{"display": "none", "paddingBottom":"60px"}}>
                             <h2>Wait for report generation</h2>
                             <Loading/>
                         </div>
@@ -158,22 +157,24 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
                     <Loading/>
                     </div>
             :
-            <div>
+            <div className='msg-page'>
                 {/* PDFViewer must be outside ReportViewer or the error occurs */}
                 <h2>問診紀錄</h2>
-                <PDFViewer>
+                <PDFViewer style={{"width" : "80%", "height": "300px"}} fileName="ChatGPT 問診紀錄.pdf">
                     <ReportViewer translations={translations} chats={chats} summary={summary}/>
                 </PDFViewer>
-                <div className='msg-container'>
+                <div className='msg-container' style={{"margin":"auto", "height": "200px"}}>
                     <Clinic clinic={clinic}></Clinic>
                 </div>
-                <button className='button-ellipse' onClick={continueConversation}>繼續問診</button>       
-                <PDFDownloadLink document={<ReportViewer translations={translations} chats={chats} summary={summary}/>} fileName="ChatGPT.pdf">
-                {({ blob, url, loading, error }) =>
-                    loading ? '' : <button className='button-ellipse margin-left'>下載問診紀錄</button>
-                }
-                </PDFDownloadLink>
-                <button className='button-ellipse margin-left' onClick={endConversation}>結束問診</button>
+                <div style={{"marginBottom":"60px"}}>
+                    <button className='button-ellipse' onClick={continueConversation}>繼續問診</button>       
+                    <PDFDownloadLink document={<ReportViewer translations={translations} chats={chats} summary={summary}/>} fileName="ChatGPT 問診紀錄.pdf">
+                    {({ blob, url, loading, error }) =>
+                        loading ? '' : <button className='button-ellipse margin-left'>下載問診紀錄</button>
+                    }
+                    </PDFDownloadLink>
+                    <button className='button-ellipse margin-left' onClick={endConversation}>結束問診</button>
+                </div>
             </div>
             }   
         </div>
