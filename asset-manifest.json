@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Whisper-and-ChatGPT/static/css/main.0068defe.chunk.css",
-    "main.js": "/Whisper-and-ChatGPT/static/js/main.b0f6adf9.chunk.js",
-    "main.js.map": "/Whisper-and-ChatGPT/static/js/main.b0f6adf9.chunk.js.map",
+    "main.js": "/Whisper-and-ChatGPT/static/js/main.e071bea5.chunk.js",
+    "main.js.map": "/Whisper-and-ChatGPT/static/js/main.e071bea5.chunk.js.map",
     "runtime-main.js": "/Whisper-and-ChatGPT/static/js/runtime-main.02c49788.js",
     "runtime-main.js.map": "/Whisper-and-ChatGPT/static/js/runtime-main.02c49788.js.map",
     "static/js/2.cc765439.chunk.js": "/Whisper-and-ChatGPT/static/js/2.cc765439.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.02c49788.js",
     "static/js/2.cc765439.chunk.js",
     "static/css/main.0068defe.chunk.css",
-    "static/js/main.b0f6adf9.chunk.js"
+    "static/js/main.e071bea5.chunk.js"
   ]
 }
