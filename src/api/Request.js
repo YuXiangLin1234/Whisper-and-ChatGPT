@@ -8,11 +8,10 @@ const chatgptModel = "gpt-3.5-turbo";
 const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
 // Huggingface whisper
-const corsProxy = "https://proxy.cors.sh/"
 // TODO: This key will only valid for 3 days
-const corsApiKey = "temp_dad43d1e9198464889afa344e26cbe2f"
+const corsApiKey = "temp_269e196b6362141f5a4f5b1ea75ff630"
+const corsProxy = "https://proxy.cors.sh/"
 const urlForWhisper = `${corsProxy}https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud`;
-// const urlForWhisper = "https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud";
 // const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
 
 // OpenAI whisper
@@ -179,9 +178,8 @@ async function sendChatRequest(translation, translations, chats, apiKey) {
 
     console.log(translations)
     // Multi-turn chats
-    // FIXME: setState() is async, so the translations here are not updated,
-    //        so constraint should be translations.length 
-    //        to including the last translation
+    // FIXME: setState() is async, so the translations here are not updated.
+    //        translations doesn't contain translation(The newest one).
     for (let i = 0; i < translations.length; i ++){
         messages.push({"role": "user", "content": translations[i]});
         messages.push({"role": "assistant", "content": chats[i]});
@@ -243,20 +241,18 @@ async function sendSummaryRequest(translations, apiKey) {
     }
 }
 
-async function sendClinicRequest(translations, apiKey) {
+async function sendClinicRequest(summary, apiKey) {
     const headers = {
         "content-type": "application/json",
         "Authorization": `Bearer ${apiKey}`
     };
     const messages = [
-                {"role": "system", "content": "根據病人的描述及門診時間表，找出專長為病人症狀的醫生 \
+                {"role": "system", "content": "根據病人的症狀及門診時間表，找出專長為病人症狀的醫生 \
                                                 並告知對應的診別及門診時間。請以繁體中文回答。"},
         ]
 
-    messages.push({"role": "user", "content": "病人的描述："});
-    for (let i = 0; i < translations.length; i ++){
-        messages.push({"role": "user", "content": translations[i]});
-    }
+    messages.push({"role": "user", "content": "病人的症狀："});
+    messages.push({"role": "user", "content": summary})
 
     messages.push({"role": "user", "content": "門診時間表："});
     for (let i = 0; i < ClinicSchedule.length; i ++){

@@ -71,13 +71,14 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
     const generateReport = async function() {
         bottomLineRef.current.style.display = "none";
         summaryButtonRef.current.style.display = "none";
+        reportLoadingRef.current.style.display = "inline";
         
         const summary = await sendSummaryRequest(translations, apiKey);
         reportLoadingRef.current.style.display = "none";
         setSummary(summary);
         console.log(summary)
         
-        const clinic = await sendClinicRequest(translations, apiKey);
+        const clinic = await sendClinicRequest(summary, apiKey);
         setClinic(clinic);
         console.log(clinic)
     }
@@ -87,8 +88,7 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
         setClinic("")
     }
 
-    const resetConversation = () => {
-        summaryButtonRef.current.style.display = "none";
+    const clearConversation = () => {
         setAudios([]);
         setTranscriptions([]);
         setTranslations([]);
@@ -96,8 +96,13 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
         setSummary([]);
     }
 
+    const restartConversation = () => {
+        summaryButtonRef.current.style.display = "none";
+        clearConversation()
+    }
+
     const endConversation = () => { 
-        resetConversation()
+        clearConversation()
         setHfToken("")
         setApiKey("")
     }
@@ -145,7 +150,7 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
                             <div ref={recordButtonRef}>
                                 <AudioRecorder onRecordingComplete={addAudioElement}/>
                             </div>
-                            <button className='circle-button' ref={clearButtonRef} onClick={resetConversation}  >
+                            <button className='circle-button' ref={clearButtonRef} onClick={restartConversation}  >
                                 <ion-icon name="trash" style={{fontSize: "17px"}}></ion-icon>
                             </button>
                         </div>
