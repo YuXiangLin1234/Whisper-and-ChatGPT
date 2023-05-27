@@ -23,8 +23,8 @@
     "web-vitals": "^3.3.0"
   },
   "resolutions": {
-      "@react-pdf/font": "2.2.1",
-      "@react-pdf/pdfkit": "2.1.0"
+    "@react-pdf/font": "2.2.1",
+    "@react-pdf/pdfkit": "2.1.0"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",

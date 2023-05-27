@@ -63,8 +63,31 @@ audio {
   height: 30px;
 }
 
-.margin-left {
+.button-margin-1 {
   margin-left: 30px;
+  margin-top: 0;
+}
+
+.button-margin-2 {
+  margin-left: 30px;
+  margin-top: 0;
+}
+
+@media screen and (max-width: 295px) {
+  .button-margin-1 {
+    margin-top: 10px;
+    margin-left: 0px;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .button-margin-1 {
+    margin-left: 0px;
+  }
+  .button-margin-2 {
+    margin-top: 10px;
+    margin-left: 0px;
+  }
 }
 
 /* Copy from Tailwind */
@@ -188,7 +211,7 @@ audio {
 }
 
 .disabled-button {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -390,5 +413,5 @@ audio {
   transform: translate(-50%, -50%); 
   display: flex;
   justify-content: space-between;
-  width: 300px;
+  width: 200px;
 }

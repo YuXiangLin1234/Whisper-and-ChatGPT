@@ -22,7 +22,7 @@ function formatDate(date) {
 function disableButton(buttonRef) {
   buttonRef.current.style.cursor = "not-allowed";
   buttonRef.current.style.pointerEvents = "none";
-  buttonRef.current.style.opacity = "0.6";
+  buttonRef.current.style.opacity = "0.4";
 }
 
 function enableButton(buttonRef) {
@@ -48,4 +48,8 @@ const saveDocument = (function () {
   };
 }());
 
-export {formatDate, disableButton, enableButton, onRenderDocument, saveDocument};
+const scrollToBottom = () => {
+  window.scrollTo(0, document.body.scrollHeight);
+};
+
+export {formatDate, disableButton, enableButton, onRenderDocument, saveDocument, scrollToBottom};

@@ -10,7 +10,7 @@ import Clinic from '../components/Clinic';
 import Loading from '../components/Loading';
 import ReportViewer from '../components/ReportViewer';
 
-import { enableButton, disableButton } from '../functions/Utils';
+import { enableButton, disableButton, scrollToBottom } from '../functions/Utils';
 import { checkModelStatus, sendAudioRequest, sendTranslationRequest, 
         sendChatRequest, sendAudioRequestOpenAi, sendSummaryRequest,
         sendClinicRequest } from '../api/Request';
@@ -66,6 +66,7 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
         summaryButtonRef.current.style.display = "inline";
         enableButton(recordButtonRef)
         enableButton(clearButtonRef)
+        setTimeout(scrollToBottom, 1000);
     };
 
     const generateReport = async function() {
@@ -165,7 +166,7 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
             <div className='msg-page'>
                 {/* PDFViewer must be outside ReportViewer or the error occurs */}
                 <h2>問診紀錄</h2>
-                <PDFViewer style={{"width" : "80%", "height": "300px"}} fileName="ChatGPT 問診紀錄.pdf">
+                <PDFViewer style={{"width" : "70%", "height": "300px"}} fileName="ChatGPT 問診紀錄.pdf">
                     <ReportViewer translations={translations} chats={chats} summary={summary}/>
                 </PDFViewer>
                 <div className='msg-container' style={{"margin":"auto", "height": "200px"}}>
@@ -175,10 +176,10 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
                     <button className='button-ellipse' onClick={continueConversation}>繼續問診</button>       
                     <PDFDownloadLink document={<ReportViewer translations={translations} chats={chats} summary={summary}/>} fileName="ChatGPT 問診紀錄.pdf">
                     {({ blob, url, loading, error }) =>
-                        loading ? '' : <button className='button-ellipse margin-left'>下載問診紀錄</button>
+                        loading ? '' : <button className='button-ellipse button-margin-1'>下載問診紀錄</button>
                     }
                     </PDFDownloadLink>
-                    <button className='button-ellipse margin-left' onClick={endConversation}>結束問診</button>
+                    <button className='button-ellipse button-margin-2' onClick={endConversation}>結束問診</button>
                 </div>
             </div>
             }   

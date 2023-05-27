@@ -10,7 +10,6 @@ import useScript from './functions/UseScript';
 
 function App() {
 
-    // useScript("https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js")
     useScript("https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js")
     const [apiKey, setApiKey] = useState("");
     const [hfToken, setHfToken] = useState("");

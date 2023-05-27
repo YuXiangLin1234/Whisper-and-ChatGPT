@@ -4,10 +4,13 @@ import React from "react";
 import { onRenderDocument } from '../functions/Utils';
 import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
 
+// localhost
+// import font from "./SourceHanSansTC-VF.ttf"
+
 Font.register({
     family: 'NotoSansTC-Regular',
-    //   src: 'https://github.com/adobe-fonts/source-han-sans/raw/release/Variable/TTF/SourceHanSansTC-VF.ttf'
     src: 'SourceHanSansTC-VF.ttf'
+    // src: font
 });
 
 const styles = StyleSheet.create({
