@@ -9,7 +9,7 @@ const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 
 // Huggingface whisper
 // TODO: This key will only valid for 3 days
-const corsApiKey = "temp_269e196b6362141f5a4f5b1ea75ff630"
+const corsApiKey = "temp_51410de77c21fa5c219c4260fb4628dc"
 const corsProxy = "https://proxy.cors.sh/"
 const urlForWhisper = `${corsProxy}https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud`;
 // const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
@@ -247,8 +247,9 @@ async function sendClinicRequest(summary, apiKey) {
         "Authorization": `Bearer ${apiKey}`
     };
     const messages = [
-                {"role": "system", "content": "根據病人的症狀及門診時間表，找出專長為病人症狀的醫生 \
-                                                並告知對應的診別及門診時間。請以繁體中文回答。"},
+                {"role": "system", "content": "根據病人的描述及門診時間表，找出門診時間表中 \
+                                        「專長」一項符合病人症狀的醫生，並告知這些醫生對應的 \
+                                        診別及門診時間。請以繁體中文回答。"},
         ]
 
     messages.push({"role": "user", "content": "病人的症狀："});
