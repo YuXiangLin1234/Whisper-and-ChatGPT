@@ -52,4 +52,18 @@ const scrollToBottom = () => {
   window.scrollTo(0, document.body.scrollHeight);
 };
 
-export {formatDate, disableButton, enableButton, onRenderDocument, saveDocument, scrollToBottom};
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const base64String = reader.result.split(',')[1];
+      resolve(base64String);
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
+}
+
+export {formatDate, disableButton, enableButton, onRenderDocument, saveDocument, scrollToBottom, fileToBase64};

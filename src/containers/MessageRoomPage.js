@@ -13,7 +13,7 @@ import ReportViewer from '../components/ReportViewer';
 import { enableButton, disableButton, scrollToBottom } from '../functions/Utils';
 import { checkModelStatus, sendAudioRequest, sendTranslationRequest, 
         sendChatRequest, sendAudioRequestOpenAi, sendSummaryRequest,
-        sendClinicRequest } from '../api/Request';
+        sendClinicRequest, sendAudioRequestLocal } from '../api/Request';
 
 const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
 
@@ -39,6 +39,10 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
         // OpenAI whisper
         // const transcription = await sendAudioRequestOpenAi(audioBlob, apiKey);
         // setTranscriptions([...transcriptions, transcription]);
+
+        // Local whisper
+        // const transcription = await sendAudioRequestLocal(audioBlob)
+        // setTranscriptions([...transcriptions, transcription])
 
         const translation = await sendTranslationRequest(transcription, apiKey);
         setTranslations([...translations, translation])

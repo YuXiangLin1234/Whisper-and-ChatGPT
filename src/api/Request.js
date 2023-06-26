@@ -10,13 +10,20 @@ const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 // Huggingface whisper
 // TODO: This key will only valid for 3 days
 const corsApiKey = "temp_51410de77c21fa5c219c4260fb4628dc"
-const corsProxy = "https://proxy.cors.sh/"
-const urlForWhisper = `${corsProxy}https://karrwwh5ysnipoiz.us-east-1.aws.endpoints.huggingface.cloud`;
+const corsProxy = "https://4e48-114-36-131-122.ngrok-free.app/"
+
+
+// Hugging Face
+const urlForWhisper = `${corsProxy}https://z6jdmt46g8ep02t7.us-east-1.aws.endpoints.huggingface.cloud`;
 // const urlForWhisper = "https://api-inference.huggingface.co/models/Evan-Lin/whisper-large-v1-tw";
 
 // OpenAI whisper
 const whisperModel = "whisper-1";
 // const urlForWhisper = "https://api.openai.com/v1/audio/transcriptions";
+
+// Local
+// const urlForWhisper = "https://7e9a-114-36-122-223.ngrok-free.app"
+
 async function validateApiKey(apiKey){
   try{
       const headers = {
@@ -101,7 +108,7 @@ const sendAudioRequestOpenAi = async function (blob, apiKey) {
         return transcription
     }
     catch (error){
-		console.log(error)
+        console.log(error)
         if (error.response.status === 429){
             const response = await axios.post(urlForWhisper, formData, {"headers": headers})
             const transcription = response.data.text 
@@ -112,16 +119,56 @@ const sendAudioRequestOpenAi = async function (blob, apiKey) {
     }
 }
 
-const sendAudioRequest = async function (blob, hfToken) {      
+const sendAudioRequestLocal = async function (blob) {      
     try{
         const headers = {
+            "content-type":  "multipart/form-data",
+        };   
+        const formData = new FormData();
+        formData.append("audio_file", blob , "audio.wav")
+
+        const response = await axios.post(urlForWhisper, formData, {"headers": headers})
+        const transcription = response.data.text;    
+        return transcription
+
+    }
+    catch (error){
+        console.log(error);
+    }
+}
+
+const sendAudioRequest = async function (blob, hfToken) {      
+    try{
+
+        // const headers = {
+        //     // "content-type":  "multipart/form-data",
+        //     // "content-type": "audio/mpeg",
+        //     "accept": "application/json",
+        //     "authorization": `Bearer ${hfToken}`,
+        // };    
+        // const formData = new FormData();
+        // const audiofile = new File([blob], "audiofile.mp3", {
+        //     type: "audio/mpeg",
+        // });
+        // formData.append("inputs", audiofile)
+
+        // formData.append('inputs', {
+        //     uri: blob,
+        //     name: 'audio.mp3',
+        //     type: 'audio/mpeg',
+        // })
+        const headers = {
             "authorization": `Bearer ${hfToken}`,
+            // "content-type": "application/json",
             "content-type": "audio/webm;codecs=opus",
             "accept": "application/json",
-            "x-cors-api-key": corsApiKey           
         };    
         
-        const response = await axios.post(urlForWhisper, blob, {"headers": headers, "data": {}})
+        // const base64String = await fileToBase64(blob);
+        // console.log(base64String)
+
+
+        const response = await axios.post(urlForWhisper, blob, {"headers": headers})
         const transcription = response.data.text;    
         return transcription
     }
@@ -280,4 +327,4 @@ async function sendClinicRequest(summary, apiKey) {
 
 export {validateApiKey, checkModelStatus, sendAudioRequest,
          sendChatRequest, sendTranslationRequest, sendAudioRequestOpenAi,
-         validateHfToken, sendSummaryRequest, sendClinicRequest};
+         validateHfToken, sendSummaryRequest, sendClinicRequest, sendAudioRequestLocal};
