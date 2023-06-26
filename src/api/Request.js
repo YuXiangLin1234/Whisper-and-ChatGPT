@@ -10,7 +10,7 @@ const urlForChatgpt = "https://api.openai.com/v1/chat/completions";
 // Huggingface whisper
 // TODO: This key will only valid for 3 days
 const corsApiKey = "temp_51410de77c21fa5c219c4260fb4628dc"
-const corsProxy = "https://4e48-114-36-131-122.ngrok-free.app/"
+const corsProxy = "https://6f67-114-36-131-122.ngrok-free.app/"
 
 
 // Hugging Face
@@ -58,7 +58,7 @@ async function validateHfToken(hfToken){
         return true
 	}
 	catch (error){
-		console.log(error.response.data.error);
+		console.log(error);
 		if (error.response.data.error === "Authorization header is correct, but the token seems invalid")
 			return false
 		else 
@@ -140,23 +140,6 @@ const sendAudioRequestLocal = async function (blob) {
 const sendAudioRequest = async function (blob, hfToken) {      
     try{
 
-        // const headers = {
-        //     // "content-type":  "multipart/form-data",
-        //     // "content-type": "audio/mpeg",
-        //     "accept": "application/json",
-        //     "authorization": `Bearer ${hfToken}`,
-        // };    
-        // const formData = new FormData();
-        // const audiofile = new File([blob], "audiofile.mp3", {
-        //     type: "audio/mpeg",
-        // });
-        // formData.append("inputs", audiofile)
-
-        // formData.append('inputs', {
-        //     uri: blob,
-        //     name: 'audio.mp3',
-        //     type: 'audio/mpeg',
-        // })
         const headers = {
             "authorization": `Bearer ${hfToken}`,
             // "content-type": "application/json",
@@ -164,10 +147,6 @@ const sendAudioRequest = async function (blob, hfToken) {
             "accept": "application/json",
         };    
         
-        // const base64String = await fileToBase64(blob);
-        // console.log(base64String)
-
-
         const response = await axios.post(urlForWhisper, blob, {"headers": headers})
         const transcription = response.data.text;    
         return transcription

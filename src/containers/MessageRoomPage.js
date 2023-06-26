@@ -170,10 +170,10 @@ const MessageRoomPage = ({apiKey, hfToken, setApiKey, setHfToken}) => {
             <div className='msg-page'>
                 {/* PDFViewer must be outside ReportViewer or the error occurs */}
                 <h2>問診紀錄</h2>
-                <PDFViewer style={{"width" : "70%", "height": "300px"}} fileName="ChatGPT 問診紀錄.pdf">
+                <PDFViewer style={{"width" : "70%", "height": "600px"}} fileName="ChatGPT 問診紀錄.pdf">
                     <ReportViewer translations={translations} chats={chats} summary={summary}/>
                 </PDFViewer>
-                <div className='msg-container' style={{"margin":"auto", "height": "200px"}}>
+                <div className='msg-container' style={{"margin":"auto", "height": "250px"}}>
                     <Clinic clinic={clinic}></Clinic>
                 </div>
                 <div style={{"marginBottom":"60px"}}>
